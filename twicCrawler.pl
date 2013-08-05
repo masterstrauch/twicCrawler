@@ -5,6 +5,7 @@ use warnings;
 
 use LWP::Simple;
 
+
 ## Constants
 ############
 my $twicUrl = 'http://www.theweekinchess.com/twic';
@@ -21,7 +22,7 @@ my @url;
 
 # string
 # matchstring for zipped pgns at $twicUrl
-my $match = 'http://www.theweekinchess.com/zips/twic\d\d\dg.zip';
+my $matchTwic = '(http:\/\/www.theweekinchess.com\/zips\/twic\d\d\dg.zip)';
 
  
 ## Functions
@@ -31,26 +32,62 @@ my $match = 'http://www.theweekinchess.com/zips/twic\d\d\dg.zip';
 # String String -> File
 # get a url and filename, writes the content to file
 
-function urlToFile($url,$fileName){
-  getstore($twicUrl,$localTwicFile) or die 'unable to get page';
+sub urlToFile{
+	my($url,$fileName) = @_;
+	getstore($url,$fileName) or die 'unable to get page';
 }
 
 # String -> Array
-# consumes a filename and reads it content into an array
+# consumes a filename (with twic-website content) and returns an array of download-links
 
-function readFile($fileName
-A
-A
-A
-open (IN,"<twic.html");
-my @datei= <IN>;
-close IN;
-my @array;
-foreach(@datei){
- #push @array, $_=~ /(<a.*?<\/a>)/gis; 
-  if ($_=~ / href\=([\"\']*)(.*?)\1[\s\/>]/is) {
-    push @array, $2;
-  } 
+sub findTwicLinks{
+	my($fileName,$match) = @_;
+	open (IN,"<$fileName");
+	my @datei= <IN>;
+	close IN;
+	my @array;
+	foreach(@datei){
+ 		if($_ =~ /$match/){
+    		push @array, $&;
+  		} 
+	}
+	return @array;              
 }
 
-print $array[0];
+# Array  -> PgnFile
+# consumes array of downloadLinks, download, unzip and put them together
+
+sub blabla{
+	my(@url)=@_;
+	@url = keepOnlyNewLinks(@url);
+}
+#deded
+# Array -> Array
+# keeps only Links which are not downloaded yet
+
+sub keepOnlyNewLinks{
+	my(@url)=@_;
+	my @alreadyDownloaded = alreadyDownloadedFiles();
+	my @difference;
+	my %count;
+	foreach my $element (@url,@alreadyDownloaded){$count{$element}++}
+	foreach my $element (keys %count){
+		if($count{$element} >1){
+			push @difference,$element;
+		}
+	}
+	return @difference;
+}
+
+#  -> Array
+# returns array with already downloaded files, information comes from File $downloadedFiles
+
+sub alreadyDownloadedFiles{
+	
+}
+
+my @arr = findTwicLinks($localTwicFile,$matchTwic);
+foreach (@arr){
+	print $_."\n";
+}
+
