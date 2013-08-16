@@ -5,6 +5,9 @@ use warnings;
 
 use LWP::Simple;
 
+## TODO also include http://www.nowinchess.com/games.php
+## TODO start with http://www.looiseschaak.be/downloads/scid/TWIC.zip
+## TODO include the pgn's into the existing TWIC-Database!
 
 ## Constants
 ############
@@ -86,8 +89,11 @@ sub alreadyDownloadedFiles{
 	
 }
 
-my @arr = findTwicLinks($localTwicFile,$matchTwic);
-foreach (@arr){
-	print $_."\n";
-}
+#my @arr = findTwicLinks($localTwicFile,$matchTwic);
+#foreach (@arr){
+#	print $_."\n";
+#}
 
+use Test::More tests => 1;
+my @arr = findTwicLinks($localTwicFile,$matchTwic);
+is(\@arr , \@arr,"test1");
